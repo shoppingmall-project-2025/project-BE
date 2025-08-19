@@ -49,7 +49,7 @@ public class ReviewController {
         return ResponseEntity.ok(reviewsByItem);
     }
 
-    @PutMapping("/{reviewId/users/{userId}")
+    @PutMapping("/{reviewId}/users/{userId}")
     public ResponseEntity<ReviewResponseDto> replaceReview(
             @PathVariable("userId") Long userId,
             @PathVariable("reviewId") Long reviewId,

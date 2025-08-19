@@ -14,6 +14,7 @@ public class ItemRequestDto {
     @NotNull(message="상품 가격은 필수 입니다")
     private Integer price;
 
-    private String image;
+    private String thumbnailImage;
+    private String detailImage;
     private String description;
 }

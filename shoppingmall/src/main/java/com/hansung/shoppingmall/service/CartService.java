@@ -22,13 +22,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CartService {
     private final CartItemRepository cartItemRepository;
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
 
-    @Transactional
     public CartItemResponseDto addItem(CartItemRequestDto requestDto){
         int qty=requestDto.getQuantity();
 
@@ -57,7 +57,6 @@ public class CartService {
         return new CartItemResponseDto(save);
     }
 
-    @Transactional
     public List<CartItemResponseDto> getCartItems(Long userId){
         Cart cart=cartRepository.findByUser_Id(userId)
                 .orElseThrow(()->new NoSuchElementException("no user"));
@@ -69,7 +68,6 @@ public class CartService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
     public void deleteCartItem(Long cartItemId){
         if(!cartItemRepository.existsById(cartItemId)){
             throw new NoSuchElementException("no cartItem");
@@ -78,7 +76,6 @@ public class CartService {
         cartItemRepository.deleteById(cartItemId);
     }
 
-    @Transactional
     public void deleteAllCartItems(Long userId){
         Cart cart=cartRepository.findByUser_Id(userId)
                 .orElseThrow(()->new NoSuchElementException("no cart"));
@@ -86,7 +83,6 @@ public class CartService {
         cartItemRepository.deleteByCart_Id(cart.getId());
     }
 
-    @Transactional
     public CartItemResponseDto updateQuantity(Long cartItemId, int newQuantity){
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new NoSuchElementException("no cartItem"));

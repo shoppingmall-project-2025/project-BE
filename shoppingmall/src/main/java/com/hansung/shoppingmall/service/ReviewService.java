@@ -21,6 +21,7 @@ import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
@@ -28,7 +29,6 @@ public class ReviewService {
     private final ItemRepository itemRepository;
     private final OrderItemRepository orderItemRepository;
 
-    @Transactional
     public ReviewResponseDto createReview(Long userId, Long itemId, ReviewRequestDto request){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("no user"));
@@ -51,19 +51,16 @@ public class ReviewService {
         return new ReviewResponseDto(saved);
     }
 
-    @Transactional
     public Page<ReviewResponseDto> getReviewsByUser(Long userId, Pageable pageable){
         return reviewRepository.findByUser_Id(userId, pageable)
                 .map(ReviewResponseDto::new);
     }
 
-    @Transactional
     public Page<ReviewResponseDto> getReviewsByItem(Long itemId, Pageable pageable){
         return reviewRepository.findByItem_Id(itemId,pageable)
                 .map(ReviewResponseDto::new);
     }
 
-    @Transactional
     public ReviewResponseDto replaceReview(Long userId, Long reviewId, ReviewRequestDto request){
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new NoSuchElementException("no review"));
@@ -78,7 +75,6 @@ public class ReviewService {
         return new ReviewResponseDto(review);
     }
 
-    @Transactional
     public void deleteReview(Long userId,Long reviewId){
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new NoSuchElementException("no review"));

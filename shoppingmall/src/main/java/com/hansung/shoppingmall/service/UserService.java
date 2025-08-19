@@ -8,6 +8,7 @@ import com.hansung.shoppingmall.repository.CartRepository;
 import com.hansung.shoppingmall.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.NoSuchElementException;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class UserService {
     private final UserRepository userRepository;
     private final CartRepository cartRepository;

@@ -18,7 +18,9 @@ public class Item {
     @Column(nullable = false)
     private int price;
 
-    private String image;
+    private String thumbnailImage;
+
+    private String detailImage;
 
     private String description;
 }

@@ -16,6 +16,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
@@ -23,7 +24,6 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final CartItemRepository cartItemRepository;
 
-    @Transactional
     public OrderResponseDto createOrderDirectly(Long userId, Long itemId, OrderRequestDto requestDto){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("no user"));
@@ -52,7 +52,6 @@ public class OrderService {
         return orderResponseDto;
     }
 
-    @Transactional
     public OrderResponseDto orderFromCart(Long userId, List<Long> cartItemIds){
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NoSuchElementException("no user"));

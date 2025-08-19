@@ -8,21 +8,23 @@ import com.hansung.shoppingmall.repository.ItemRepository;
 import com.hansung.shoppingmall.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ItemService {
     private final ItemRepository itemRepository;
-    private final UserRepository userRepository;
 
     public ItemResponseDto save(ItemRequestDto dto){
         Item item = new Item();
         item.setName(dto.getName());
         item.setPrice(dto.getPrice());
-        item.setImage(dto.getImage());
+        item.setThumbnailImage(dto.getThumbnailImage());
+        item.setDetailImage(dto.getDetailImage());
         item.setDescription(dto.getDescription());
 
         Item savedItem=itemRepository.save(item);
@@ -48,13 +50,14 @@ public class ItemService {
         itemRepository.deleteById(id);
     }
 
-    public ItemResponseDto update(Long id, ItemRequestDto requestDto){
+    public ItemResponseDto update(Long id, ItemRequestDto dto){
         Item item=itemRepository.findById(id)
                 .orElseThrow(()->new NoSuchElementException("no Item"));
-        item.setName(requestDto.getName());
-        item.setPrice(requestDto.getPrice());
-        item.setImage(requestDto.getImage());
-        item.setDescription(requestDto.getDescription());
+        item.setName(dto.getName());
+        item.setPrice(dto.getPrice());
+        item.setThumbnailImage(dto.getThumbnailImage());
+        item.setDetailImage(dto.getDetailImage());
+        item.setDescription(dto.getDescription());
 
         Item updatedItem = itemRepository.save(item);
         return new ItemResponseDto(updatedItem);

@@ -10,13 +10,15 @@ public class ItemResponseDto {
         this.name = item.getName();
         this.id = item.getId();
         this.price = item.getPrice();
-        this.image = item.getImage();
+        this.thumbnailImage = item.getThumbnailImage();
+        this.detailImage = item.getDetailImage();
         this.description = item.getDescription();
     }
 
     private final Long id;
     private final String name;
     private final int price;
-    private final String image;
+    private final String thumbnailImage;
+    private final String detailImage;
     private final String description;
 }
