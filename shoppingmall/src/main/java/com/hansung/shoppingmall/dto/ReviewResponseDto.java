@@ -7,17 +7,6 @@ import java.time.LocalDate;
 
 @Getter
 public class ReviewResponseDto {
-
-    public ReviewResponseDto(Review review) {
-        this.id = review.getId();
-        this.userId = review.getUser().getId();
-        this.itemId = review.getItem().getId();
-        this.rating = review.getRating();
-        this.title = review.getTitle();
-        this.content = review.getContent();
-        this.createdAt = review.getCreatedAt();
-    }
-
     private Long id;
     private Long userId;
     private Long itemId;

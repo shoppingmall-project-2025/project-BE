@@ -29,59 +29,59 @@ public class ReviewService {
     private final ItemRepository itemRepository;
     private final OrderItemRepository orderItemRepository;
 
-    public ReviewResponseDto createReview(Long userId, Long itemId, ReviewRequestDto request){
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("no user"));
+//    public ReviewResponseDto createReview(Long userId, Long itemId, ReviewRequestDto request){
+//        User user = userRepository.findById(userId)
+//                .orElseThrow(() -> new NoSuchElementException("no user"));
+//
+//        Item item = itemRepository.findById(itemId)
+//                .orElseThrow(() -> new NoSuchElementException("no item"));
+//
+//        if(!orderItemRepository.existsByOrder_User_IdAndItem_Id(userId,itemId)){
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"상품을 구매한 회원만 작성 가능");
+//        }
+//
+//        Review review = new Review();
+//        review.setItem(item);
+//        review.setUser(user);
+//        review.setRating(request.getRating());
+//        review.setTitle(request.getTitle());
+//        review.setContent(request.getContent());
+//        Review saved = reviewRepository.save(review);
+//
+//        return new ReviewResponseDto(saved);
+//    }
 
-        Item item = itemRepository.findById(itemId)
-                .orElseThrow(() -> new NoSuchElementException("no item"));
+//    public Page<ReviewResponseDto> getReviewsByUser(Long userId, Pageable pageable){
+//        return reviewRepository.findByUser_Id(userId, pageable)
+//                .map(ReviewResponseDto::new);
+//    }
+//
+//    public Page<ReviewResponseDto> getReviewsByItem(Long itemId, Pageable pageable){
+//        return reviewRepository.findByItem_Id(itemId,pageable)
+//                .map(ReviewResponseDto::new);
+//    }
 
-        if(!orderItemRepository.existsByOrder_User_IdAndItem_Id(userId,itemId)){
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN,"상품을 구매한 회원만 작성 가능");
-        }
+//    public ReviewResponseDto replaceReview(Long userId, Long reviewId, ReviewRequestDto request) {
+//        Review review = reviewRepository.findById(reviewId)
+//                .orElseThrow(() -> new NoSuchElementException("no review"));
+//
+//        if (!review.getUser().getId().equals(userId)) {
+//            throw new IllegalStateException("본인만 수정 가능");
+//        }
+//
+//        review.setRating(request.getRating());
+//        review.setTitle(request.getTitle());
+//        review.setContent(request.getContent());
+//        return new ReviewResponseDto(review);
+//    }
 
-        Review review = new Review();
-        review.setItem(item);
-        review.setUser(user);
-        review.setRating(request.getRating());
-        review.setTitle(request.getTitle());
-        review.setContent(request.getContent());
-        Review saved = reviewRepository.save(review);
-
-        return new ReviewResponseDto(saved);
-    }
-
-    public Page<ReviewResponseDto> getReviewsByUser(Long userId, Pageable pageable){
-        return reviewRepository.findByUser_Id(userId, pageable)
-                .map(ReviewResponseDto::new);
-    }
-
-    public Page<ReviewResponseDto> getReviewsByItem(Long itemId, Pageable pageable){
-        return reviewRepository.findByItem_Id(itemId,pageable)
-                .map(ReviewResponseDto::new);
-    }
-
-    public ReviewResponseDto replaceReview(Long userId, Long reviewId, ReviewRequestDto request){
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NoSuchElementException("no review"));
-
-        if(!review.getUser().getId().equals(userId)){
-            throw new IllegalStateException("본인만 수정 가능");
-        }
-
-        review.setRating(request.getRating());
-        review.setTitle(request.getTitle());
-        review.setContent(request.getContent());
-        return new ReviewResponseDto(review);
-    }
-
-    public void deleteReview(Long userId,Long reviewId){
-        Review review = reviewRepository.findById(reviewId)
-                .orElseThrow(() -> new NoSuchElementException("no review"));
-
-        if(!review.getUser().getId().equals(userId)){
-            throw new IllegalStateException("본인만 삭제 가능");
-        }
-        reviewRepository.delete(review);
-    }
+//    public void deleteReview(Long userId,Long reviewId){
+//        Review review = reviewRepository.findById(reviewId)
+//                .orElseThrow(() -> new NoSuchElementException("no review"));
+//
+//        if(!review.getUser().getId().equals(userId)){
+//            throw new IllegalStateException("본인만 삭제 가능");
+//        }
+//        reviewRepository.delete(review);
+//    }
 }

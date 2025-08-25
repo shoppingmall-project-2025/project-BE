@@ -1,26 +1,35 @@
 package com.hansung.shoppingmall.entity;
 
+import com.hansung.shoppingmall.dto.ItemRequestDto;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique=true)
     private String name;
 
-    @Column(nullable = false)
     private int price;
 
-    private String thumbnailImage;
+    private String thumbnailImageUrl;
 
-    private String detailImage;
+    private String detailImageUrl;
 
     private String description;
+
+    public void update(ItemRequestDto dto) {
+        this.name = dto.getName();
+        this.price = dto.getPrice();
+        this.thumbnailImageUrl = dto.getThumbnailImage();
+        this.detailImageUrl = dto.getDetailImage();
+        this.description = dto.getDescription();
+    }
 }

@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/review")
@@ -19,50 +21,74 @@ public class ReviewController {
 
     private final ReviewService reviewService;
 
-    @PostMapping("/users/{userId}/items/{itemId}")
-    public ResponseEntity<ReviewResponseDto> createReview(
-            @PathVariable("userId") Long userId,
-            @PathVariable("itemId") Long itemId,
-            @RequestBody ReviewRequestDto request){
+//    // 리뷰 생성
+//    @PostMapping("/users/{userId}/items/{itemId}")
+//    public ResponseEntity<?> createReview(
+//            @PathVariable("userId") Long userId,
+//            @PathVariable("itemId") Long itemId,
+//            @RequestBody ReviewRequestDto request){
+//        try {
+//            ReviewResponseDto review = reviewService.createReview(userId, itemId, request);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("success", review));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//        }
+//    }
 
-        ReviewResponseDto review = reviewService.createReview(userId, itemId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(review);
-    }
+//    // 사용자별 리뷰 목록 조회
+//    @GetMapping("/users/{userId}")
+//    public ResponseEntity<?> getUserReviews(
+//            @PathVariable("userId") Long userId,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size){
+//        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
+//        try {
+//            Page<ReviewResponseDto> reviewsByUser = reviewService.getReviewsByUser(userId, pageable);
+//            return ResponseEntity.ok().body(Map.of("success", reviewsByUser));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//        }
+//    }
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<Page<ReviewResponseDto>> getUserReviews(
-            @PathVariable("userId") Long userId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Order.desc("createdAt")));
-        Page<ReviewResponseDto> reviewsByUser = reviewService.getReviewsByUser(userId, pageable);
-        return ResponseEntity.ok(reviewsByUser);
-    }
-
-    @GetMapping("/items/{itemId}")
-    public ResponseEntity<Page<ReviewResponseDto>> getItemReviews(
-            @PathVariable("itemId") Long itemId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size){
-        Pageable pageable=PageRequest.of(page,size,Sort.by(Sort.Order.desc("createdAt")));
-        Page<ReviewResponseDto> reviewsByItem=reviewService.getReviewsByItem(itemId,pageable);
-        return ResponseEntity.ok(reviewsByItem);
-    }
-
-    @PutMapping("/{reviewId}/users/{userId}")
-    public ResponseEntity<ReviewResponseDto> replaceReview(
-            @PathVariable("userId") Long userId,
-            @PathVariable("reviewId") Long reviewId,
-            @RequestBody ReviewRequestDto request){
-        ReviewResponseDto reviewResponse = reviewService.replaceReview(userId, reviewId, request);
-        return ResponseEntity.ok(reviewResponse);
-    }
-
-    @DeleteMapping("/{reviewId}/users/{userId}")
-    public ResponseEntity<Void> deleteReview(
-            @PathVariable("userId") Long userId,
-            @PathVariable("reviewId") Long reviewId){
-        reviewService.deleteReview(userId,reviewId);
-        return ResponseEntity.noContent().build();
-    }
+//    // 상품별 리뷰 목록 조회
+//    @GetMapping("/items/{itemId}")
+//    public ResponseEntity<?> getItemReviews(
+//            @PathVariable("itemId") Long itemId,
+//            @RequestParam(defaultValue = "0") int page,
+//            @RequestParam(defaultValue = "10") int size){
+//        Pageable pageable=PageRequest.of(page,size,Sort.by(Sort.Order.desc("createdAt")));
+//        try {
+//            Page<ReviewResponseDto> reviewsByItem = reviewService.getReviewsByItem(itemId, pageable);
+//            return ResponseEntity.ok().body(Map.of("success", reviewsByItem));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//        }
+//    }
+//
+//    // 리뷰 수정
+//    @PutMapping("/{reviewId}/users/{userId}")
+//    public ResponseEntity<?> replaceReview(
+//            @PathVariable("userId") Long userId,
+//            @PathVariable("reviewId") Long reviewId,
+//            @RequestBody ReviewRequestDto request){
+//        try {
+//            ReviewResponseDto reviewResponse = reviewService.replaceReview(userId, reviewId, request);
+//            return ResponseEntity.ok().body(Map.of("success", reviewResponse));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//        }
+//    }
+//
+//    // 리뷰 삭제
+//    @DeleteMapping("/{reviewId}/users/{userId}")
+//    public ResponseEntity<?> deleteReview(
+//            @PathVariable("userId") Long userId,
+//            @PathVariable("reviewId") Long reviewId){
+//        try {
+//            reviewService.deleteReview(userId, reviewId);
+//            return ResponseEntity.ok().body(Map.of("success", "리뷰가 삭제되었습니다."));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//        }
+//    }
 }

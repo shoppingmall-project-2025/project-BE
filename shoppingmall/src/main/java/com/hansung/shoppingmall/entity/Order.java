@@ -18,20 +18,17 @@ public class Order {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name="user_id",nullable = false)
+    @JoinColumn(name="user_id")
     private User user;
 
     @OneToMany(mappedBy = "order",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<OrderItem> orderItems=new ArrayList<>();
 
-    @Column(nullable = false)
     private String orderNumber;
 
-    @Column(nullable = false)
     private int amount;
 
     // 주문 시간
-    @Column(nullable = false)
     private LocalDateTime orderDate;
 
     @PrePersist

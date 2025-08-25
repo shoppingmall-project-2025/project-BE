@@ -1,12 +1,14 @@
 package com.hansung.shoppingmall.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Table(
         name="cartitem",
         uniqueConstraints = @UniqueConstraint(columnNames = {"cart_id", "item_id"})
@@ -16,14 +18,13 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name="cart_id", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="cart_id")
     private Cart cart;
 
-    @ManyToOne
-    @JoinColumn(name="item_id",nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="item_id")
     private Item item;
 
-    @Column(nullable = false)
     private int quantity;
 }

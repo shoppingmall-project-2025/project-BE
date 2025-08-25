@@ -29,66 +29,69 @@ public class CartService {
     private final ItemRepository itemRepository;
     private final CartRepository cartRepository;
 
-    public CartItemResponseDto addItem(CartItemRequestDto requestDto){
-        int qty=requestDto.getQuantity();
+    public void  addItem(CartItemRequestDto requestDto){
+        Item item = getItemOrThrow(requestDto.getItemId());
+        Cart cart = getCartOrThrow(requestDto.getUserId());
 
-        User user=userRepository.findById(requestDto.getUserId())
-                .orElseThrow(()->new NoSuchElementException("no user"));
-
-        Item item=itemRepository.findById(requestDto.getItemId())
-                .orElseThrow(()->new NoSuchElementException("no item"));
-
-
-        Cart cart=cartRepository.findByUser_Id(requestDto.getUserId())
-                .orElseThrow(()->new NoSuchElementException("no cart"));
-
-
-        CartItem cartItem=cartItemRepository.findByCart_IdAndItem_Id(cart.getId(),item.getId())
-                .map(ci->{ci.setQuantity(ci.getQuantity()+qty); return ci;})
-                .orElseGet(()->{
-                    CartItem ci = new CartItem();
-                    ci.setCart(cart);
-                    ci.setItem(item);
-                    ci.setQuantity(qty);
+        CartItem cartItem = cartItemRepository.findByCart_IdAndItem_Id(cart.getId(), item.getId())
+                .map(ci -> {
+                    ci.setQuantity(ci.getQuantity() + requestDto.getQuantity());
                     return ci;
-                });
+                })
+                .orElseGet(() -> CartItem.builder()
+                        .cart(cart)
+                        .item(item)
+                        .quantity(requestDto.getQuantity())
+                        .build());
 
-        CartItem save = cartItemRepository.save(cartItem);
-        return new CartItemResponseDto(save);
+        cartItemRepository.save(cartItem);
     }
 
+    @Transactional(readOnly = true)
     public List<CartItemResponseDto> getCartItems(Long userId){
-        Cart cart=cartRepository.findByUser_Id(userId)
-                .orElseThrow(()->new NoSuchElementException("no user"));
-
-        List<CartItem> cartItems = cartItemRepository.findByCart_Id(cart.getId());
+        Cart cart = getCartOrThrow(userId);
+        List<CartItem> cartItems = cartItemRepository.findByCartId(cart.getId());
 
         return cartItems.stream()
                 .map(CartItemResponseDto::new)
                 .collect(Collectors.toList());
     }
 
-    public void deleteCartItem(Long cartItemId){
-        if(!cartItemRepository.existsById(cartItemId)){
-            throw new NoSuchElementException("no cartItem");
-        }
 
-        cartItemRepository.deleteById(cartItemId);
+    public void deleteCartItem(Long cartItemId){
+        CartItem cartItem = getCartItemOrThrow(cartItemId);
+        cartItemRepository.delete(cartItem);
     }
 
     public void deleteAllCartItems(Long userId){
-        Cart cart=cartRepository.findByUser_Id(userId)
-                .orElseThrow(()->new NoSuchElementException("no cart"));
-
-        cartItemRepository.deleteByCart_Id(cart.getId());
+        Cart cart = getCartOrThrow(userId);
+        cartItemRepository.deleteAllByCart(cart);
     }
 
     public CartItemResponseDto updateQuantity(Long cartItemId, int newQuantity){
-        CartItem cartItem = cartItemRepository.findById(cartItemId)
-                .orElseThrow(() -> new NoSuchElementException("no cartItem"));
-
+        CartItem cartItem = getCartItemOrThrow(cartItemId);
         cartItem.setQuantity(newQuantity);
-        CartItem save = cartItemRepository.save(cartItem);
-        return new CartItemResponseDto(save);
+        return new CartItemResponseDto(cartItem);
+    }
+
+    // private helper methods
+    private User getUserOrThrow(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자를 찾을 수 없습니다."));
+    }
+
+    private Item getItemOrThrow(Long itemId) {
+        return itemRepository.findById(itemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 상품을 찾을 수 없습니다."));
+    }
+
+    private Cart getCartOrThrow(Long userId) {
+        return cartRepository.findByUserId(userId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자의 장바구니를 찾을 수 없습니다."));
+    }
+
+    private CartItem getCartItemOrThrow(Long cartItemId) {
+        return cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 장바구니 상품을 찾을 수 없습니다."));
     }
 }

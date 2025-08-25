@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -21,45 +22,46 @@ public class UserService {
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
 
-    public UserResponseDto save(UserRequestDto dto){
-        User user = new User();
-        user.setUserName(dto.getUserName());
-        user.setPassword(dto.getPassword());
-
-        User savedUser=userRepository.save(user);
+    public void createUser(UserRequestDto dto){
+        //id 중복 검증
+        if(userRepository.findByUserId(dto.getUserId()) != null){
+            throw new IllegalArgumentException("이미 존재하는 ID입니다.");
+        }
+        //유저 생성
+        User user = User.builder()
+                .userId(dto.getUserId())
+                .username(dto.getUsername())
+                .password(dto.getPassword())
+                .email(dto.getEmail())
+                .phoneNumber(dto.getPhoneNumber())
+                .build();
+        userRepository.save(user);
 
         Cart cart = new Cart();
         cart.setUser(user);
         cartRepository.save(cart);
-        return new UserResponseDto(savedUser);
     }
 
-    public List<?> getAllUsers(){
-        return userRepository.findAll().stream()
-                .map(UserResponseDto::new)
-                .toList();
-    }
-
-    public UserResponseDto getUserById(Long id){
-        User user=userRepository.findById(id)
-                .orElseThrow(()->new RuntimeException("User not find"));
-        return new UserResponseDto(user);
+    @Transactional(readOnly = true)
+    public UserResponseDto getUser(Long id){
+        User user = getUserOrThrow(id);
+        return user.entityToDto(user);
     }
 
     public void delete(Long id){
-        if(!userRepository.existsById(id)){
-            throw new NoSuchElementException("User not found");
-        }
         userRepository.deleteById(id);
     }
 
-    public UserResponseDto update(Long id, UserRequestDto requestDto){
-        User user=userRepository.findById(id)
-                .orElseThrow(()->new NoSuchElementException("User not find"));
-        user.setUserName(requestDto.getUserName());
-        user.setPassword(requestDto.getPassword());
-
-        User updatedUser = userRepository.save(user);
-        return new UserResponseDto(updatedUser);
+    public void update(Long id, UserRequestDto requestDto){
+        User findUser = getUserOrThrow(id);
+        findUser.update(requestDto);
     }
+    private User getUserOrThrow(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("해당 ID의 사용자를 찾을 수 없습니다."));
+    }
+
+
+
+
 }

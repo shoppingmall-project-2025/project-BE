@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,46 +17,69 @@ import java.util.List;
 public class OrderController {
 
     private final OrderService orderService;
+//
+//    // 상품 직접 주문
+//    @PostMapping("/item/{itemId}")
+//    public ResponseEntity<?> orderProductDirectly(
+//            @PathVariable("userId") Long userId,
+//            @PathVariable("itemId") Long itemId,
+//            @RequestBody OrderRequestDto requestDto) {
+//        try {
+//            OrderResponseDto orderDirectly = orderService.createOrderDirectly(userId, itemId, requestDto);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("success", orderDirectly));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//        }
+//    }
+//
+//    // 장바구니에서 주문
+//    @PostMapping("/cart")
+//    public ResponseEntity<?> orderFromCart(
+//            @PathVariable("userId") Long userId,
+//            @RequestBody List<Long> cartItemIds) {
+//        try {
+//            OrderResponseDto orderResponseDto = orderService.orderFromCart(userId, cartItemIds);
+//            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("success", orderResponseDto));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//        }
+//    }
+//
+//    // 사용자 주문 목록 조회
+//    @GetMapping
+//    public ResponseEntity<?> getUserOrders(@PathVariable("userId") Long userId) {
+//        try {
+//            List<OrderResponseDto> userOrders = orderService.getUserOrders(userId);
+//            return ResponseEntity.ok().body(Map.of("success", userOrders));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//        }
+//    }
+//
+//    // 단일 주문 상세 조회
+//    @GetMapping("/order/{orderId}")
+//    public ResponseEntity<?> getOrderById(
+//            @PathVariable("userId") Long userId,
+//            @PathVariable("orderId") Long orderId) {
+//        try {
+//            OrderResponseDto orderById = orderService.getOrderById(userId, orderId);
+//            return ResponseEntity.ok().body(Map.of("success", orderById));
+//        } catch (IllegalArgumentException e) {
+//            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+//        }
+//    }
 
-    @PostMapping("/item/{itemId}")
-    public ResponseEntity<OrderResponseDto> orderProductDirectly(
-            @PathVariable("userId") Long userId,
-            @PathVariable("itemId") Long itemId,
-            @RequestBody OrderRequestDto requestDto){
-        OrderResponseDto orderDirectly = orderService.createOrderDirectly(userId, itemId, requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderDirectly);
-
-    }
-
-    @PostMapping("/cart")
-    public ResponseEntity<OrderResponseDto> orderFromCart(
-            @PathVariable("userId") Long userId,
-            @RequestBody List<Long> cartItemIds){
-        OrderResponseDto orderResponseDto = orderService.orderFromCart(userId, cartItemIds);
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderResponseDto);
-    }
-
-
-    @GetMapping
-    public ResponseEntity<List<OrderResponseDto>> getUserOrders(@PathVariable("userId")Long userId){
-        List<OrderResponseDto> userOrders = orderService.getUserOrders(userId);
-        return ResponseEntity.ok(userOrders);
-    }
-
-    @GetMapping("/order/{orderId}")
-    public ResponseEntity<OrderResponseDto> getOrderById(
-            @PathVariable("userId")Long userId,
-            @PathVariable("orderId")Long orderId){
-        OrderResponseDto orderById = orderService.getOrderById(userId, orderId);
-        return ResponseEntity.ok(orderById);
-    }
-
+    // 주문 취소
     @DeleteMapping("/order/{orderId}")
-    public ResponseEntity<Void> cancelOrder(
-            @PathVariable("userId")Long userId,
-            @PathVariable("orderId")Long orderId){
-        orderService.cancelOrder(userId,orderId);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> cancelOrder(
+            @PathVariable("userId") Long userId,
+            @PathVariable("orderId") Long orderId) {
+        try {
+            orderService.cancelOrder(userId, orderId);
+            return ResponseEntity.ok().body(Map.of("success", "주문이 성공적으로 취소되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
     }
 
 }
